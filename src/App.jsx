@@ -8,13 +8,12 @@ import {
   useNavigate,
   useLocation
 } from "react-router-dom";
-
 function App() {
   const [wines, setWines] = useState([]);
   const [loadingWines, setLoadingWines] = useState(true);
   const read_wine_db = () => {
     console.log("Read wine db")
-    fetch('/api/wines')
+    fetch(`${import.meta.env.VITE_APP_API_URL}/wines`)
       .then((response) => response.json())
       .then((data) => {
         setWines(data);
@@ -62,7 +61,7 @@ function Home(props) {
     for (const [key, value] of Object.entries(query_params)) {
       query_string += `${key}=${value}&`;
     }
-    fetch('/api/search_wines?' + query_string)
+    fetch(`${import.meta.env.VITE_APP_API_URL}/search_wines?${query_string}`)
       .then((response) => response.json())
       .then((data) => {
         props.setWines(data);
@@ -97,7 +96,7 @@ function AddWines(props) {
     setSearching(true);
     // This uses the endpoint /search_wine_web?query=<search_query>, and returns the results as one wine object
     console.log("Searching for wines with query: " + search_query)
-    fetch('/api/search_wine_web?query=' + search_query)
+    fetch(`${import.meta.env.VITE_APP_API_URL}/search_wine_web${query}=${search_query}`)
       .then((response) => response.json())
       .then((data) => {
         setFoundWines(data.results);
@@ -108,7 +107,7 @@ function AddWines(props) {
   }
 
   const add_wine = (wine) => {
-    fetch('/api/add_wine', {
+    fetch(`${import.meta.env.VITE_APP_API_URL}/add_wine`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
