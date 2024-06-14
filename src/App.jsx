@@ -26,6 +26,19 @@ function App() {
   }, []);
   const [navigation_timeout, setNavigationTimeout] = useState(null);
 
+  const search_wines = (query_params) => {
+    let query_string = '';
+    for (const [key, value] of Object.entries(query_params)) {
+      query_string += `${key}=${value}&`;
+    }
+    fetch(`${import.meta.env.VITE_APP_API_URL}/search_wines?${query_string}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setWines(data);
+        console.log(data);
+      });
+  }
+
 
   return (
     <Router>
@@ -41,9 +54,9 @@ function App() {
         </Link>
       </nav>
       <Routes>
-        <Route path="/" element={<Home read_wine_db={read_wine_db} wines={wines} loadingWines={loadingWines} />} />
+        <Route path="/" element={<Home search_wines={search_wines} read_wine_db={read_wine_db} wines={wines} loadingWines={loadingWines} />} />
         <Route path="/find" element={<AddWines setNavigationTimeout={setNavigationTimeout} navigation_timeout={navigation_timeout} />} />
-        <Route path="/servers" element={<Servers read_wine_db={read_wine_db} wines={wines} loadingWines={loadingWines} />} />
+        <Route path="/servers" element={<Servers search_wines={search_wines}  read_wine_db={read_wine_db} wines={wines} loadingWines={loadingWines} />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>
     </Router >
@@ -56,23 +69,10 @@ function Home(props) {
     props.read_wine_db();
   }, [location])
 
-  const search_wines = (query_params) => {
-    let query_string = '';
-    for (const [key, value] of Object.entries(query_params)) {
-      query_string += `${key}=${value}&`;
-    }
-    fetch(`${import.meta.env.VITE_APP_API_URL}/search_wines?${query_string}`)
-      .then((response) => response.json())
-      .then((data) => {
-        props.setWines(data);
-        console.log(data);
-      });
-  }
-
   return (
     <div className="Page">
       <h1>Your Wine List</h1>
-      <WineDataGrid location={location} wines={props.wines} loadingWines={props.loadingWines} />
+      <WineDataGrid search_wines={props.search_wines} location={location} wines={props.wines} loadingWines={props.loadingWines} />
     </div>
   )
 }
@@ -245,7 +245,7 @@ function Servers(props) {
   return (
     <>
       <h1>Take Wine Home</h1>
-      <WineDataGrid location={location} wines={props.wines} loadingWines={props.loadingWines} />
+      <WineDataGrid search_wines={props.search_wines} location={location} wines={props.wines} loadingWines={props.loadingWines} />
     </>
   )
 }
@@ -257,21 +257,21 @@ function WineDataGrid(props) {
         <div className="SortAndFilterMethods">
           <p className="input-container">
             <label htmlFor="name">Name:</label>
-            <input type="text" id="name" name="name" onChange={(e) => search_wines({ name: e.target.value })}></input>
+            <input type="text" id="name" name="name" onChange={(e) => props.search_wines({ name: e.target.value })}></input>
           </p>
           <p className="input-container">
             <label htmlFor="producer">Producer:</label>
-            <input type="text" id="producer" name="producer" onChange={(e) => search_wines({ producer: e.target.value })}></input>
+            <input type="text" id="producer" name="producer" onChange={(e) => props.search_wines({ producer: e.target.value })}></input>
           </p>
 
           <p className="input-container">
             <label htmlFor="varietal">Varietal:</label>
-            <input type="text" id="varietal" name="varietal" onChange={(e) => search_wines({ varietal: e.target.value })}></input>
+            <input type="text" id="varietal" name="varietal" onChange={(e) => props.search_wines({ varietal: e.target.value })}></input>
           </p>
 
           <p className="input-container">
             <label htmlFor="vintage">Vintage:</label>
-            <input type="text" id="vintage" name="vintage" onChange={(e) => search_wines({ vintage: e.target.value })}></input>
+            <input type="text" id="vintage" name="vintage" onChange={(e) => props.search_wines({ vintage: e.target.value })}></input>
           </p>
           <br />
           <br />
