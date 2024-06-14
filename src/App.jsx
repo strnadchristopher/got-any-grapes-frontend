@@ -79,6 +79,7 @@ function Home(props) {
 
 function AddWines(props) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [inputText, setInputText] = useState('');
   const [found_wines, setFoundWines] = useState([]);
   const [searching, setSearching] = useState(false);
@@ -91,6 +92,20 @@ function AddWines(props) {
       clearTimeout(props.navigation_timeout);
     }
   }, [])
+
+  useEffect(() =>{
+    if (props.navigation_timeout != null) {
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    }
+    setInputText('');
+    setFoundWines([]);
+    setSearching(false);
+    setShowAddWineModal(false);
+    setSelectedWine({});
+    setSearchAttempted(false);
+  }, [location])
 
   const find_wine = (search_query) => {
     setSearching(true);
