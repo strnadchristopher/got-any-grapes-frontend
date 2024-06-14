@@ -96,7 +96,7 @@ function AddWines(props) {
     setSearching(true);
     // This uses the endpoint /search_wine_web?query=<search_query>, and returns the results as one wine object
     console.log("Searching for wines with query: " + search_query)
-    fetch(`${import.meta.env.VITE_APP_API_URL}/search_wine_web?${query}=${search_query}`)
+    fetch(`${import.meta.env.VITE_APP_API_URL}/search_wine_web?query=${search_query}`)
       .then((response) => response.json())
       .then((data) => {
         setFoundWines(data.results);
